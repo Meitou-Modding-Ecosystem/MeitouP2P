@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DefineConstants Condition="'$(MaestroCore)' != ''">$(DefineConstants);MAESTRO</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MeitouClient;Meitou.Core;Meitou.Data;Meitou.Simulation;0Harmony;BepuPhysics;BepuUtilities">
+      <HintPath>$(MeitouDir)/%(Identity).dll</HintPath>
+    </Reference>
+    <Reference Include="Maestro.Core" Condition="'$(MaestroCore)' != ''"><HintPath>$(MaestroCore)</HintPath></Reference>
+  </ItemGroup>
+</Project>

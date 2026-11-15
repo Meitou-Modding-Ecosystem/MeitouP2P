@@ -1,0 +1,10 @@
+{
+  "id": "meitou.p2p",
+  "version": "0.1.0",
+  "apiVersion": 2,
+  "gameVersion": "=0.20.0",
+  "assemblies": [
+    "MeitouP2P.dll"
+  ],
+  "entry": "MeitouP2P.ConnectorMod"
+}
