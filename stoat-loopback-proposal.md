@@ -1,6 +1,6 @@
 # Two Wanderers outside Stoat
 
-The November 2026 proposal asked whether a friend could direct a character in a host's campaign while keeping their own camera. The first playable milestone passed on Windows MeitouClient 0.20.0 with two loopback clients, one test squad and one guest-controlled Scout. The host moved the Guide while the guest panned away, returned, selected the Scout at her destination and gave her a second ground order. [Replay and measured results](https://github.com/mattresspad/MeitouP2P-Coop/blob/main/docs/stoat-results.md)
+The November 2026 proposal asked whether a friend could direct a character in a host's campaign while keeping their own camera. The first playable milestone passed on Windows MeitouClient 0.20.0 with two loopback clients, one test squad and one guest-controlled Scout. The host moved the Guide while the guest panned away, returned, selected the Scout at her destination and gave her a second ground order. [Replay and measured results](https://github.com/Meitou-Modding-Ecosystem/MeitouP2P-Coop/blob/main/docs/stoat-results.md)
 
 The original two-squad campaign remains a future milestone. It requires stable identities for characters sharing a template, a save/reload test with a returning guest, and a trial on separate computers. The current fixture assigns its Scout per connection and per world. A successful smoke test for world replacement demonstrates grant invalidation. Campaign persistence needs a separate test.
 
