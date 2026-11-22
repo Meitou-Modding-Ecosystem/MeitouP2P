@@ -45,7 +45,7 @@ After the combined build, set `KENSHI_PATH` to your installed Kenshi folder. Sta
 .\tools\stoat-windows.ps1 -Meitou $env:MEITOU_DIR -Kenshi $env:KENSHI_PATH
 ```
 
-The launcher creates disposable working directories under `artifacts`, disables autosave and shares game data through a directory junction. Pick **Host session** on the left and **Join host** on the right. Once the guest shows a host tick, select the Scout by her body and right-click walkable ground. The host can move the Guide at the same time. In the guest window an empty-ground click clears selection.
+The launcher creates disposable working directories under `artifacts`, disables autosave and shares game data through a directory junction. Buildings and foliage load in both windows. Pick **Host session** on the left and **Join host** on the right. Once the guest shows a host tick, select the Scout by her body and right-click walkable ground. The host can move the Guide at the same time. In the guest window an empty-ground click clears selection.
 
 To replay the automated check, start a fresh pair and run the following once both games and their control channels are ready. It places the windows side by side, uses screen-coordinate clicks and A/D camera input, and retains captures and transcripts in the trial folder.
 

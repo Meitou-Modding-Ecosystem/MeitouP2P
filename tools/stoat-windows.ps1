@@ -46,7 +46,7 @@ foreach ($side in 'host','guest') {
     $env:MEITOU_STOAT_WALK_ROLE = $side
     $env:TEMP = "$profilePath\temp"
     $env:TMP = $env:TEMP
-    $arguments = '--windowed --size 860x600 --new-game "Stoat Scout Walk" --seed 17 --time 15 --fps-limit 24 --no-audio --no-gi --no-precompile --no-foliage --no-objects --shadow-quality 0 --texture-quality 1 --water-reflection 0 --control-dir "' + "$profilePath\control" + '"'
+    $arguments = '--windowed --size 860x600 --new-game "Stoat Scout Walk" --seed 17 --time 15 --fps-limit 24 --no-audio --no-gi --no-precompile --shadow-quality 0 --texture-quality 1 --water-reflection 0 --control-dir "' + "$profilePath\control" + '"'
     $client = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $profilePath -RedirectStandardOutput "$profilePath\client.log" -RedirectStandardError "$profilePath\errors.log" -WindowStyle Normal -PassThru
     $client.Id | Set-Content -LiteralPath "$profilePath\client.pid" -Encoding ascii
     Write-Output "$side PID $($client.Id)"
