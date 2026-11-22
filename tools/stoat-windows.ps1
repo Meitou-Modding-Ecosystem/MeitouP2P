@@ -9,7 +9,7 @@ $root = Split-Path $PSScriptRoot -Parent
 $Meitou = (Resolve-Path -LiteralPath $Meitou).Path
 $exe = (Get-Item -LiteralPath (Join-Path $Meitou 'MeitouClient.exe')).FullName
 $clientVersion = (Get-Item -LiteralPath (Join-Path $Meitou 'MeitouClient.dll')).VersionInfo.ProductVersion
-if ($clientVersion -notmatch '^0\.20\.[01](\+|$)') { throw "The Stoat fixture requires Meitou 0.20.0 or 0.20.1. Found $clientVersion." }
+if ($clientVersion -notmatch '^0\.22\.1(\+|$)') { throw "The Stoat fixture requires Meitou 0.22.1. Found $clientVersion." }
 $data = (Resolve-Path -LiteralPath (Join-Path $Kenshi 'data')).Path
 $probe = (Resolve-Path -LiteralPath "$PSScriptRoot\Probe\bin\Release\net11.0\Probe.dll").Path
 $probeGame = Get-Item -LiteralPath (Join-Path (Split-Path $probe) 'MeitouClient.dll')

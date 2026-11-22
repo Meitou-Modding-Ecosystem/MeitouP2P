@@ -7,7 +7,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $MeitouDir = (Resolve-Path -LiteralPath $MeitouDir).Path
 $game = Get-Item -LiteralPath (Join-Path $MeitouDir 'MeitouClient.dll')
-if ($game.VersionInfo.ProductVersion -notmatch '^0\.20\.[01](\+|$)') { throw "Expected Meitou 0.20.0 or 0.20.1, found $($game.VersionInfo.ProductVersion)." }
+if ($game.VersionInfo.ProductVersion -notmatch '^0\.22\.1(\+|$)') { throw "Expected Meitou 0.22.1, found $($game.VersionInfo.ProductVersion)." }
 $release = $game.VersionInfo.ProductVersion.Split('+')[0]
 $opts = @('-c','Release','--nologo','--disable-build-servers','-p:NuGetAudit=false',"-p:MeitouDir=$MeitouDir")
 function Build-Project([string]$Project, [string[]]$Extra = @()) {
