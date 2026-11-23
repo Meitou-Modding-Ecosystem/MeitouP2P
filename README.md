@@ -49,6 +49,8 @@ After the combined build, set `KENSHI_PATH` to your installed Kenshi folder. Sta
 
 The launcher creates disposable working directories under `artifacts`, disables autosave and shares game data through a directory junction. Buildings and foliage load in both windows. Pick **Host session** on the left and **Join host** on the right. Once the guest shows a host tick, select the Scout by her body and right-click walkable ground. The host can move the Guide at the same time. In the guest window an empty-ground click clears selection.
 
+Generated caches use one shared `artifacts/meitou-cache` directory across runs instead of Meitou's default on the Windows system drive. Pass `-CacheDir 'D:\Caches\Meitou'` to choose another location with room for many gigabytes. This uses stock Meitou's `--cache-root` option and leaves saves in their existing location.
+
 To replay the automated check, start a fresh pair and run the following once both games and their control channels are ready. It places the windows side by side, uses screen-coordinate clicks and A/D camera input, and retains captures and transcripts in the trial folder.
 
 ```powershell

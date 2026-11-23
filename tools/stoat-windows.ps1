@@ -2,10 +2,14 @@ param(
     [Parameter(Mandatory)][string]$Meitou,
     [Parameter(Mandatory)][string]$Kenshi,
     [string]$Dotnet = 'dotnet',
-    [int]$Port = 42871
+    [int]$Port = 42871,
+    [string]$CacheDir
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
+if (!$CacheDir) { $CacheDir = Join-Path $root 'artifacts\meitou-cache' }
+$CacheDir = [IO.Path]::GetFullPath($CacheDir)
+New-Item -ItemType Directory -Path $CacheDir -Force | Out-Null
 $Meitou = (Resolve-Path -LiteralPath $Meitou).Path
 $exe = (Get-Item -LiteralPath (Join-Path $Meitou 'MeitouClient.exe')).FullName
 $clientVersion = (Get-Item -LiteralPath (Join-Path $Meitou 'MeitouClient.dll')).VersionInfo.ProductVersion
@@ -47,9 +51,20 @@ foreach ($side in 'host','guest') {
     $env:TEMP = "$profilePath\temp"
     $env:TMP = $env:TEMP
     $arguments = '--windowed --size 860x600 --new-game "Stoat Scout Walk" --seed 17 --time 15 --fps-limit 24 --no-audio --no-gi --no-precompile --shadow-quality 0 --texture-quality 1 --water-reflection 0 --control-dir "' + "$profilePath\control" + '"'
-    $client = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $profilePath -RedirectStandardOutput "$profilePath\client.log" -RedirectStandardError "$profilePath\errors.log" -WindowStyle Normal -PassThru
+    $arguments += ' --cache-root "' + ($CacheDir -replace '(\\+)$', '$1$1') + '"'
+    $cacheOverrides = @{}
+    try {
+        foreach ($name in 'MEITOU_OBJECT_LOD_CACHE','MEITOU_CHARACTER_LOD_CACHE','MEITOU_IMPOSTOR_CACHE') {
+            $cacheOverrides[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
+            [Environment]::SetEnvironmentVariable($name, $null, 'Process')
+        }
+        $client = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $profilePath -RedirectStandardOutput "$profilePath\client.log" -RedirectStandardError "$profilePath\errors.log" -WindowStyle Normal -PassThru
+    } finally {
+        foreach ($name in $cacheOverrides.Keys) { [Environment]::SetEnvironmentVariable($name, $cacheOverrides[$name], 'Process') }
+    }
     $client.Id | Set-Content -LiteralPath "$profilePath\client.pid" -Encoding ascii
     Write-Output "$side PID $($client.Id)"
 }
 $run | Set-Content -LiteralPath "$root\artifacts\stoat-current.txt" -Encoding ascii
 Write-Output $run
+Write-Output "Derived-data cache: $CacheDir"

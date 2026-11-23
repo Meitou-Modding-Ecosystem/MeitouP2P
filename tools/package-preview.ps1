@@ -5,7 +5,7 @@ $CoopDir = (Resolve-Path -LiteralPath $CoopDir).Path
 & "$root\build.ps1" -MeitouDir $MeitouDir -CoopDir $CoopDir -Dotnet $Dotnet
 $stage = Join-Path $root ('artifacts\remote-preview-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 New-Item -ItemType Directory -Path "$stage\mods", "$stage\licenses" | Out-Null
-Copy-Item -Path "$CoopDir\tools\playtest\*" -Destination $stage
+foreach ($name in 'Setup.ps1','Launch.ps1','Collect-Logs.ps1') { Copy-Item -LiteralPath "$CoopDir\tools\playtest\$name" -Destination $stage }
 foreach ($name in 'MeitouP2P','MeitouP2P-Coop') { Copy-Item -LiteralPath "$root\artifacts\mods\$name" -Destination "$stage\mods" -Recurse }
 & $Dotnet "$PSScriptRoot\Probe\bin\Release\net11.0\Probe.dll" stoat-start "$stage\mods\Stoat Walk"
 if ($LASTEXITCODE) { throw 'Fixture generation failed.' }
