@@ -6,7 +6,9 @@ internal sealed record ConnectionPresentation(string Title, string Guidance)
     internal static ConnectionPresentation Describe(Lobby lobby, ConnectionStatus connection)
     {
         if (lobby.StopReason is { } reason)
-            return new("Trial stopped", "The previous trial ended. Host a fresh session, then ask your friend to Join and Ready.\n" + reason);
+            return new("Trial stopped", (lobby.Hosting
+                ? "The previous trial ended. Host a fresh session, then ask your friend to Join and Ready."
+                : "The previous trial ended. Ask the host to start a fresh session, then choose Join and Ready.") + "\n" + reason);
         if (!lobby.Enabled)
             return new("Multiplayer", "Host: choose this PC's address. Guest: paste the host's address, then Join.");
         if (connection.Peer == null)
@@ -14,7 +16,10 @@ internal sealed record ConnectionPresentation(string Title, string Guidance)
             if (connection.Active && lobby.Hosting)
                 return lobby.HadPeer
                     ? new("Guest disconnected", "Waiting for your guest to Rejoin and Ready. A new guest session may require a fresh trial.")
-                    : new("Waiting for guest", "Hosting at " + connection.Address + ". Share this PC through Tailscale and send your friend this address.");
+                    : new("Waiting for guest", "Hosting at " + connection.Address + ". " +
+                        (System.Net.IPEndPoint.TryParse(connection.Address, out var endpoint) && System.Net.IPAddress.IsLoopback(endpoint.Address)
+                            ? "This address works only on this PC. Join from a second local client."
+                            : "Share this PC through Tailscale and send your friend this address."));
             if (connection.Active)
                 return new("Connecting", "Contacting the host and checking compatibility. Cancel stops this attempt.");
             return new(lobby.HadPeer ? "Connection lost" : "Could not connect",

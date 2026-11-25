@@ -141,6 +141,9 @@ try
             "fresh guest after replacement cannot resume the previous trial");
         Check(ConnectionPresentation.Describe(hl, hs.Snapshot).Title == "Trial stopped" && hl.StopReason != null,
             "fresh-trial explanation survives returning to the menu");
+        await Until(()=> { replacementLobby.Update(game); return !replacementLobby.Enabled; });
+        Check(ConnectionPresentation.Describe(replacementLobby, replacement.Snapshot).Guidance.Contains("Ask the host"),
+            "stopped guest is instructed to Join rather than Host");
     }
     finally { replacementLobby.End(); }
 }
