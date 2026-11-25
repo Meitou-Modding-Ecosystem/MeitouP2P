@@ -3,5 +3,5 @@
     <OutputType>Exe</OutputType><TargetFramework>net11.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup><Compile Include="../../src/Session.cs" Link="Session.cs"/><Compile Include="../../src/Lobby.cs" Link="Lobby.cs"/></ItemGroup>
+  <ItemGroup><Compile Include="../../src/Session.cs" Link="Session.cs"/><Compile Include="../../src/Lobby.cs" Link="Lobby.cs"/><Compile Include="../../src/ConnectionPresentation.cs" Link="ConnectionPresentation.cs"/></ItemGroup>
 </Project>
