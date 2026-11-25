@@ -16,6 +16,10 @@ internal sealed class Lobby(Session session, Action<string> log)
     internal bool Enabled { get; private set; }
     internal bool Playing { get; private set; }
     internal bool Ready { get; private set; }
+    internal bool HadPeer { get; private set; }
+    internal string? StopReason { get; private set; }
+    internal bool Preparing => preparedTrial != Guid.Empty;
+    internal bool GuestReady { get { lock (gate) return guest.Ready; } }
     internal string Status { get; private set; } = "Choose Host or Join.";
     internal bool CanStart { get { lock (gate) return Hosting && peer != null && guest.Ready && trial == Guid.Empty; } }
     Guid? peer, trialPeer;
@@ -38,6 +42,8 @@ internal sealed class Lobby(Session session, Action<string> log)
         Hosting = host;
         Enabled = true;
         Ready = Playing = false;
+        HadPeer = false;
+        StopReason = null;
         peer = null;
         trialPeer = null;
         startRequested = restartRequired = false;
@@ -66,6 +72,7 @@ internal sealed class Lobby(Session session, Action<string> log)
         poll = null;
         lock (gate) { guest = new(false, Guid.Empty, false); published = new(Guid.Empty, false, "Ended"); }
         Status = "Session ended.";
+        StopReason = null;
     }
     string Receive(Guid who, string body)
     {
@@ -93,6 +100,7 @@ internal sealed class Lobby(Session session, Action<string> log)
         {
             lock (gate) if (restartRequired) throw new InvalidOperationException("Start a fresh host trial after a world replacement or new guest.");
             var connection = session.Snapshot;
+            if (connection.Peer != null) HadPeer = true;
             if (peer != connection.Peer)
             {
                 lock (gate) { peer = connection.Peer; guest = new(false, Guid.Empty, false); }
@@ -164,6 +172,7 @@ internal sealed class Lobby(Session session, Action<string> log)
                 return;
             }
             End();
+            StopReason = reason;
             Status = "Trial stopped: " + reason;
             log(Status);
         }

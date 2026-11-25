@@ -111,7 +111,8 @@ internal sealed class NativeMenu(ConnectorMod connector, Lobby lobby, Action<str
         {
             b.Disabled.Remove("MultiplayerButton");
             b.Properties["MultiplayerButton"] = new Dictionary<string,string> { ["FontPixels"] = "14", ["TextColour"] = "#eee2ca" };
-            b.Text["MultiplayerButton"] = lobby.Enabled ? (connector.Connection.Peer == null ? "Session — disconnected" : "Session — " + lobby.Status) : "Multiplayer";
+            var presentation = ConnectionPresentation.Describe(lobby, connector.Connection);
+            b.Text["MultiplayerButton"] = lobby.Enabled || lobby.StopReason != null ? "Session — " + presentation.Title : "Multiplayer";
             return;
         }
         if (id != Screen) return;
@@ -120,8 +121,10 @@ internal sealed class NativeMenu(ConnectorMod connector, Lobby lobby, Action<str
         b.Text["Intro"] = "One host + one guest. Share the host PC through Tailscale, then join its private address.";
         b.Text["Mode"] = mode?.Name ?? "No multiplayer mode installed";
         b.Text["AddressLabel"] = "Host address and port (Local cycles this PC's addresses)";
-        b.Text["Status"] = error.Length > 0 ? error : (mode?.Unavailable ?? lobby.Status)
-            + (c.Peer != null ? $"\nCompatible pack · round trip {c.RoundTripMs:F0} ms" : "");
+        var status = ConnectionPresentation.Describe(lobby, c);
+        b.Text["Status"] = error.Length > 0 ? "Action could not complete: " + error
+            : mode == null ? "Install a multiplayer mode before hosting or joining."
+            : mode.Unavailable ?? (status.Title + "\n" + status.Guidance);
         foreach (var (key, label) in new[] { ("Local","Local"),("Copy","Copy"),("Host","Host"),("Join","Join"),
             ("Ready",lobby.Ready ? "Ready (set)" : "Ready"),("Start","Start trial"),("Rejoin","Rejoin"),
             ("Leave",c.Active && !c.Hosting && c.Peer == null ? "Cancel" : "Leave"),("CancelButton","Close") }) b.Text[key] = label;
