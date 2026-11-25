@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           repository: Meitou-Modding-Ecosystem/MeitouP2P-Coop
-          ref: 669ed412167ceb94bfe2f5da14a7c8d3d745976b
+          ref: 4bb3336ff3631dd1bba4150c9dfd96646b6618a0
           path: coop
           persist-credentials: false
       - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5

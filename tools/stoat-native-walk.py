@@ -135,7 +135,7 @@ def projected_body(position, camera, size):
     return [round(size[0]/2+f*x/depth),round(size[1]/2-f*up/depth)]
 
 
-def run_trial(host, guest, evidence):
+def run_trial(host, guest, evidence, connected=False):
     pool = ThreadPoolExecutor(2)
     clients = (host,guest)
     ui=ctypes.WinDLL('user32',use_last_error=True)
@@ -151,14 +151,15 @@ def run_trial(host, guest, evidence):
         if not ui.SetWindowPos(c.window(),0,x,y,width,height,20):
             raise ctypes.WinError(ctypes.get_last_error())
         deadline=time.monotonic()+240
-        while c.one('state')['screen']!='world':
+        while c.one('state')['screen'] not in ('world', 'meitou.p2p.entry'):
             if time.monotonic()>deadline:
                 raise TimeoutError(c.side+' world load')
             time.sleep(1)
-    host.click([62,55])
-    time.sleep(.45)
-    guest.click([62,55])
-    time.sleep(1)
+    if not connected:
+        host.click([62,55])
+        time.sleep(.45)
+        guest.click([62,55])
+        time.sleep(1)
     index = 0
     records = []
     def capture(label):
@@ -205,6 +206,8 @@ def run_trial(host, guest, evidence):
     guide_target=host.ground(other)
     assert distance(old,first_target)>100 and distance(old_guide,guide_target)>30
     host_log = host.folder / 'client.log'
+    if not host_log.exists():
+        host_log = max(host.folder.glob('client-*.log'), key=lambda p:p.stat().st_mtime)
     movement_offset = host_log.stat().st_size
     guest.click(first,'right')
     host.select(guide_pixel,[GUIDE])
@@ -268,6 +271,8 @@ def run_trial(host, guest, evidence):
     guest.select(guest.body(GUIDE),[GUIDE])
     offset=host_log.stat().st_size
     guest_log = guest.folder / 'client.log'
+    if not guest_log.exists():
+        guest_log = max(guest.folder.glob('client-*.log'), key=lambda p:p.stat().st_mtime)
     feedback_offset = guest_log.stat().st_size
     guest.ground(empty)
     guest.click(empty,'right')
@@ -307,8 +312,9 @@ def run_trial(host, guest, evidence):
 if __name__=='__main__':
     cli=argparse.ArgumentParser(description=__doc__)
     cli.add_argument('run',type=Path,help='fresh visible run from stoat-windows.ps1, with the game control channels ready')
+    cli.add_argument('--connected',action='store_true',help='Host/Join/Ready/Start already completed through the Multiplayer menu')
     args=cli.parse_args()
     run=args.run.resolve()
     evidence=run/('native-walk-'+datetime.now().strftime('%H%M%S-%f'))
     evidence.mkdir()
-    run_trial(Client(run,'host',evidence),Client(run,'guest',evidence),evidence)
+    run_trial(Client(run,'host',evidence),Client(run,'guest',evidence),evidence,args.connected)
